@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>SlideShowApp</title>
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+
+  <link href="lib/css/ionic.css" rel="stylesheet">
+  <link href="lib/css/app.css" rel="stylesheet">
+  <script src="lib/js/ionic.bundle.js"></script>
+
+  <!-- Needed for Cordova/PhoneGap (will be a 404 during development) -->
+  <script src="js/app.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/custom_directives.js"></script>
+  <script src="js/backend.js"></script>
+  <script src="js/slideshows.js"></script>
+  <script src="cordova.js"></script>
+</head>
+
+<body ng-app="gla" ng-controller="GlaCtrl">
+
+  <ion-side-menus>
+
+    <!-- Center content -->
+    <ion-pane ion-side-menu-content>
+      <div class="bar bar-header bar-slideshow">
+        <button class="button button-icon" ng-click="toggleSlideShows()">
+          <i class="icon ion-navicon"></i>
+        </button>
+        <h1 class="title">{{activeSlideShow.title}}</h1>
+        <button class="button button-icon" ng-click="generate()">
+          <i class="icon ion-ios7-albums-outline"></i>
+        </button>
+      </div>
+      <ion-content has-header="true" scroll="false">
+      <div class="bar bar-header bar-slides">
+        <h2 class="title">Slides</h2>
+        <!-- New Slide button-->
+        <button class="button button-icon" ng-click="newSlide()">
+          <i class="icon ion-plus"></i>
+        </button>
+      </div>
+      <ion-content has-header="true" scroll="false">
+        <ion-list show-delete="true" 
+          delete-icon="ion-close-round" 
+          on-delete="deleteSlide(item)"
+          can-delete="true">
+            <ion-item item="slide" ng-repeat="slide in activeSlideShow.slides">
+              {{slide.elements[0].source}}
+            </ion-item>
+          </ion-list>
+      </ion-content>
+      </ion-content>
+    </ion-pane>
+
+
+    <!-- Left menu -->
+    <ion-side-menu side="left">
+      <div class="bar bar-header bar-dark">
+        <h1 class="title">SlideShows</h1>
+        <button class="button button-icon" ng-click="newSlideShow()">
+          <i class="icon ion-plus"></i>
+        </button>
+      </div>
+      <ion-content has-header="true" scroll="false" >
+
+        <ion-list show-delete="true" 
+          delete-icon="ion-close-round" 
+          on-delete="deleteSlideShow(item)"
+          can-delete="true"
+          >
+
+          <ion-item item="slideShow" 
+                    ng-class="{active: isActive(slideShow)}"
+                    ng-click="selectSlideShow(slideShow, $index)"
+                    ng-repeat="slideShow in slideShows"
+                    >
+            {{slideShow.title}}
+          </ion-item>
+
+        </ion-list>
+      </ion-content>
+    </ion-side-menu>
+
+  </ion-side-menus>
+</body>
+
+</html>

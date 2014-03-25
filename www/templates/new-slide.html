@@ -1,0 +1,86 @@
+<div class="modal">
+
+    <!-- Modal header bar -->
+    <div class="bar bar-header bar-slideshow">
+        <h1 class="title">New Slide</h1>
+        <button class="button button-clear button-positive" ng-click="closeNewSlide()">Cancel</button>
+    </div>
+
+    <!-- Modal content area -->
+    <ion-content has-header="true" scroll="true">
+
+        <ion-list show-delete="true" 
+              delete-icon="ion-close-round" 
+              can-delete="true"
+              on-delete="deleteElement(item)" 
+              >
+            <ion-item item="element" ng-repeat="element in slide.elements" >
+
+                <div ng-if="element.type == 'image'">
+                    <img style="width:100px;height:100px;border: 1px solid #33ff66" ng-src="{{ element.source }}" />
+                </div>
+                <div ng-if="element.type == 'title'">
+                    <h2>{{ element.source }}</h2>
+                </div>
+
+                <div ng-if="element.type == 'content'">
+                    <div class="item-text-wrap">{{ element.source }}</div>
+                </div>
+
+            </ion-item>
+        </ion-list>
+
+        <div class="button-bar padding" ng-hide="hideElementOptions">
+            <button class="button button-positive" ng-click="showTitle()">
+               Title
+            </button>
+            <button class="button button-positive" ng-click="showContent()">
+               Content
+            </button>
+            <button class="button button-positive" ng-click="capturePhoto()">
+               Picture
+            </button>
+        </div>
+
+
+        <div class="list" ng-hide="!titleInput.display">
+
+            <label class="item item-input">
+              <input type="text" placeholder="Título?" ng-model="myform.title">
+            </label>
+            <div class="button-bar padding">
+                <button class="button button-positive" ng-click="addTitle()">
+                  Add
+                </button>
+                <button class="button button-assertive" ng-click="quitTitle()">
+                  Cancel
+                </button>
+            </div>
+
+        </div>
+
+        <div class="list" ng-hide="!contentInput.display">
+
+            <label class="item item-input">
+              <textarea placeholder="Contenido?" ng-model="myform.content"></textarea>
+            </label>
+            <div class="button-bar padding">
+                <button class="button button-positive" ng-click="addContent()">
+                  Add
+                </button>
+                <button class="button button-assertive" ng-click="quitContent()">
+                  Cancel
+                </button>
+            </div>
+
+        </div>
+
+
+        <div class="padding">
+            <button ng-click="createSlide()" class="button button-block button-create" ng-disabled="createDisabled()">Create Slide</button>
+        </div>
+
+    </ion-content>
+
+</div>
+
