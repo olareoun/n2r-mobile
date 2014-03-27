@@ -6,6 +6,7 @@ angular.module('gla', ['ionic'])
     $scope.slideShows.push(newSlideShow);
     SlideShows.save($scope.slideShows);
     $scope.selectSlideShow(newSlideShow, $scope.slideShows.length-1);
+    $scope.slideShowSelected = true;
   };
 
   $scope.slide = {};
@@ -18,9 +19,26 @@ angular.module('gla', ['ionic'])
 
   $scope.slideShows = SlideShows.all();
 
+  $scope.slideShowSelected = false;
   $scope.activeSlideShow = $scope.slideShows[SlideShows.getLastActiveIndex()];
+  $scope.slideShowSelected = $scope.activeSlideShow;
+  $scope.activeSlideShow = $scope.activeSlideShow || {title: "No slideshow selected"};
 
   $scope.hideElementOptions = false;
+
+  $scope.optionButtons = [
+    {
+      text: 'Edit',
+      type: 'button button-assertive',
+      onTap: function(item) {
+        var index = $scope.activeSlideShow.slides.indexOf(item);
+        $scope.slide.index = index;
+        $scope.slide.elements = item.elements;
+        $scope.slide.valid = true;
+        $scope.newSlide();
+      }
+    }
+  ];
 
   $scope.createDisabled = function(){
     return !$scope.slide.valid;
@@ -99,6 +117,10 @@ angular.module('gla', ['ionic'])
     if (SlideShows.getLastActiveIndex() == index){
       $scope.selectSlideShow($scope.slideShows[$scope.slideShows.length - 1], $scope.slideShows.length - 1);
     }
+    if ($scope.slideShows == 0){
+        $scope.slideShowSelected = false;
+        $scope.activeSlideShow = {title: "No slideshow selected"};
+    }
   };
 
   $scope.selectSlideShow = function(slideShow, index) {
@@ -117,9 +139,15 @@ angular.module('gla', ['ionic'])
     if(!$scope.activeSlideShow || !$scope.slide) {
       return;
     }
-    $scope.activeSlideShow.slides.push({
+    var newSlide = {
       elements: $scope.slide.elements
-    });
+    };
+    if ($scope.slide.index >= 0){
+      $scope.activeSlideShow.slides.splice($scope.slide.index, 1, newSlide).join();
+      $scope.slide.index = -1;
+    } else {
+      $scope.activeSlideShow.slides.push(newSlide);
+    }
     $scope.slideModal.hide();
 
     SlideShows.save($scope.slideShows);
@@ -138,6 +166,7 @@ angular.module('gla', ['ionic'])
 
     var callbacks = {
       success: function(id){
+        window.plugins.socialsharing.share(null, null, null, Backend.getUrl(id))
         window.open(Backend.getUrl(id), '_blank', 'location=no');
       },
       error: function(){
